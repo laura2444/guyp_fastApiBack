@@ -1,0 +1,12 @@
+# Ignorar entorno virtual
+venv/
+env/
+ENV/
+.venv/
+
+.env
+
+__pycache__/
+*.py[cod]
+*.sqlite3
+.DS_Store
