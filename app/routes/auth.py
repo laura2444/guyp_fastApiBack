@@ -1,8 +1,7 @@
 from fastapi import APIRouter
-from app.services.user_service import register_user, login_user
+from app.services.user_service import register_user, login_user, update_user, delete_user
 from app.schemas.user_schemas import UserRegisterSchema, UserLoginSchema, UserResponseSchema
-
-
+from typing import Dict
 
 auth_router = APIRouter()
 
@@ -13,3 +12,12 @@ async def signup(data: UserRegisterSchema):
 @auth_router.post("/signin", response_model=UserResponseSchema)
 async def signin(data: UserLoginSchema):
     return await login_user(data)
+
+#Daniel Tamara Rivera
+@auth_router.put("/update/{user_id}", response_model=UserResponseSchema)
+async def update(user_id: str, data: Dict):
+    return await update_user(user_id, data)
+
+@auth_router.delete("/delete/{user_id}")
+async def delete(user_id: str):
+    return await delete_user(user_id)

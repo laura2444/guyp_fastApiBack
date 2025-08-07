@@ -83,3 +83,65 @@ async def login_user(data_user: UserLoginSchema) -> UserResponseSchema:
             status_code=500,
             detail={"message": "Error al iniciar sesión", "error": str(e)}
         )
+        
+#Daniel Tamara Rivera 
+#TOCA AJUSTARLO PARA QUE CUANDO NO DETECTA NADA NO PRESENTE ERROR 500 Internal.
+async def update_user(user_id: str, updated_data: dict) -> UserResponseSchema:
+    try:
+        db = get_database()
+        collection = db["users"]
+
+        user_obj_id = ObjectId(user_id)
+
+        if "password" in updated_data:
+            updated_data["password"] = hash_password(updated_data["password"])
+
+        result = await collection.update_one(
+            {"_id": user_obj_id},
+            {"$set": updated_data}
+        )
+
+        if result.modified_count == 0:
+            raise HTTPException(
+                status_code=404,
+                detail="No se pudo actualizar la cuenta. Verifica el ID."
+            )
+
+        updated_user = await collection.find_one({"_id": user_obj_id})
+        token = create_access_token({"user_id": str(updated_user["_id"])})
+
+        return UserResponseSchema(
+            id=str(updated_user["_id"]),
+            name=updated_user["name"],
+            email=updated_user["email"],
+            token=token
+        )
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail={"message": "Error al actualizar usuario", "error": str(e)}
+        )
+        
+#Daniel Tamara Rivera
+async def delete_user(user_id: str) -> dict:
+    try:
+        db = get_database()
+        collection = db["users"]
+
+        user_obj_id = ObjectId(user_id)
+        result = await collection.delete_one({"_id": user_obj_id})
+
+        if result.deleted_count == 0:
+            raise HTTPException(
+                status_code=404,
+                detail="No se encontró el usuario para eliminar"
+            )
+
+        return {"message": "Usuario eliminado correctamente"}
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail={"message": "Error al eliminar usuario", "error": str(e)}
+        )
