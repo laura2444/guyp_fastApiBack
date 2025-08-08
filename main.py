@@ -5,6 +5,8 @@ from app.routes.auth import auth_router
 from app.database.mongodb import connect_to_mongodb, close_mongodb
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
+from app.routes.plant import router as plant_router 
+from app.routes.image_router import router as image
 
 load_dotenv()
 
@@ -27,11 +29,10 @@ app.add_middleware(CORSMiddleware,
     allow_headers=["*"]
 )
 
-
 #routes
-app.include_router(auth_router, prefix="/auth", tags=["auth"])          
-
-
+app.include_router(auth_router, prefix="/auth", tags=["auth"]) 
+app.include_router(plant_router, tags=["plant"])  
+app.include_router(image, tags=["image"])           
 
 
 @app.get("/")

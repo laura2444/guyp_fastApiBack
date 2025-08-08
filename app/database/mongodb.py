@@ -1,10 +1,12 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.errors import ConnectionFailure
+from motor.motor_asyncio import AsyncIOMotorGridFSBucket
 import os
 
 class database:
     client = None
     database = None
+    fs = None  # Aquí se guardará la instancia de GridFS
 
 db= database() #instancia global para acceder a la bd desde cualquier lugar del proyecto
 
@@ -14,6 +16,7 @@ async def connect_to_mongodb():
         db.client = AsyncIOMotorClient(uri)
         await db.client.admin.command("ping") # verifica si la conexión es se ha realizado , puede que se cree el client pero no se conecte a mongo
         db.database = db.client["guyp"]
+        db.fs = AsyncIOMotorGridFSBucket(db.database) #se inicializa GridFS
         print("Conexión realizada a la base de datos MongoDB")
 
     except ConnectionFailure as e:
@@ -30,4 +33,5 @@ async def close_mongodb():
 def get_database():
     return db.database
 
-
+def get_gridfs():
+    return db.fs
