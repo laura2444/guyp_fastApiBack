@@ -23,9 +23,11 @@ async def upload_analysis(
 ):
     fs = get_gridfs()
 
-    # Subir imagen a GridFS
     image_data = await image.read()
-    image_id = await fs.upload_from_stream(image.filename, image_data)
+
+    filename = image.filename or "uploaded_file"
+    image_id = await fs.upload_from_stream(filename, image_data)
+
 
     # Guardar análisis
     location = {"lat": lat, "lng": lng}

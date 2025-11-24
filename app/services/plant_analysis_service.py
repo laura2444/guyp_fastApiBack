@@ -1,4 +1,4 @@
-from app.models.plant import PlantAnalysis
+from app.models.plant import PlantAnalysis, PyObjectId
 from app.database.mongodb import get_database, get_gridfs
 from bson import ObjectId
 
@@ -7,10 +7,10 @@ async def save_analysis_record(user_id: str, prediction: str, location: dict, im
     db = get_database()
 
     record = PlantAnalysis(
-        user_id=ObjectId(user_id),
+        user_id=PyObjectId(user_id),
         prediction=prediction,
         location=location,
-        image_url=ObjectId(image_id)  # aseguramos que se guarde como ObjectId real
+        image_url=PyObjectId(image_id)
     )
 
     result = await db["plant_analysis"].insert_one(

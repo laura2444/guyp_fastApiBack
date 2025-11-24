@@ -1,37 +1,50 @@
-from motor.motor_asyncio import AsyncIOMotorClient
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorGridFSBucket
 from pymongo.errors import ConnectionFailure
-from motor.motor_asyncio import AsyncIOMotorGridFSBucket
+from typing import Optional, Any
 import os
 
-class database:
-    client = None
-    database = None
-    fs = None  # Aquí se guardará la instancia de GridFS
+class Database:
+    client: Optional[AsyncIOMotorClient] = None
+    database: Optional[Any] = None
+    fs: Optional[AsyncIOMotorGridFSBucket] = None
 
-db= database() #instancia global para acceder a la bd desde cualquier lugar del proyecto
+db = Database()
 
 async def connect_to_mongodb():
     try:
         uri = os.getenv("URI")
+        if not uri:
+            raise RuntimeError("La variable de entorno URI no está definida.")
+
         db.client = AsyncIOMotorClient(uri)
-        await db.client.admin.command("ping") # verifica si la conexión es se ha realizado , puede que se cree el client pero no se conecte a mongo
+
+        # Test de conexión
+        await db.client.admin.command("ping")
+
         db.database = db.client["guyp"]
-        db.fs = AsyncIOMotorGridFSBucket(db.database) #se inicializa GridFS
-        print("Conexión realizada a la base de datos MongoDB")
+        db.fs = AsyncIOMotorGridFSBucket(db.database)
+
+        print("Conexión realizada a MongoDB")
 
     except ConnectionFailure as e:
-        print(f"Error de conexión a MongoDB: No se pudo conectar al servidor: {e}")
+        print("Error de conexión a MongoDB:", e)
         raise
     except Exception as e:
-        print(f"Error de conexión a MongoDB: {e}")
+        print("Error al inicializar MongoDB:", e)
         raise
-
+    
 async def close_mongodb():
-    db.client.close()
-    print("Conexión a MongoDB cerrada")
+    if db.client:
+        db.client.close()
+        print("Conexión a MongoDB cerrada")
 
 def get_database():
+    if db.database is None:
+        raise RuntimeError("La base de datos no está inicializada. Debes ejecutar connect_to_mongodb() primero.")
     return db.database
 
-def get_gridfs():
+
+def get_gridfs() -> AsyncIOMotorGridFSBucket:
+    if db.fs is None:
+        raise RuntimeError("GridFS no está inicializado. connect_to_mongodb() no fue ejecutado.")
     return db.fs
