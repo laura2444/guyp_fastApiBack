@@ -31,6 +31,7 @@ class PlantAnalysis(BaseModel):
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
     model_config = {
+        "populate_by_name": True,   # 🔴 ESTA LÍNEA ES CLAVE
         "arbitrary_types_allowed": True,
         "json_encoders": {ObjectId: str}
     }
