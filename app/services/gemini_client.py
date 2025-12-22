@@ -2,8 +2,7 @@ import json
 from typing import Dict, Iterator, Optional
 import google.genai as genai
 from google.genai import types
-#Ignoramos el warning de Pylance por la importación de 'safety'
-from google.genai.types import safety
+
 import os
 
 # Esquema para el frontend
@@ -65,20 +64,20 @@ class GeminiClient:
             response_schema=_response_schema_frontend,
             safety_settings=[
                 types.SafetySetting(
-                    category=safety.HarmCategory.DANGEROUS_CONTENT,
-                    threshold=safety.HarmBlockThreshold.MEDIUM_AND_ABOVE
+                    category=types.HarmCategory.DANGEROUS_CONTENT,
+                    threshold=types.HarmBlockThreshold.MEDIUM_AND_ABOVE
                 ),
                 types.SafetySetting(
-                    category=safety.HarmCategory.HATE_SPEECH,
-                    threshold=safety.HarmBlockThreshold.ONLY_HIGH
+                    category=types.HarmCategory.HATE_SPEECH,
+                    threshold=types.HarmBlockThreshold.ONLY_HIGH
                 ),
                 types.SafetySetting(
-                    category=safety.HarmCategory.HARASSMENT,
-                    threshold=safety.HarmBlockThreshold.ONLY_HIGH
+                    category=types.HarmCategory.HARASSMENT,
+                    threshold=types.HarmBlockThreshold.ONLY_HIGH
                 ),
                 types.SafetySetting(
-                    category=safety.HarmCategory.SEXUALLY_EXPLICIT,
-                    threshold=safety.HarmBlockThreshold.ONLY_HIGH
+                    category=types.HarmCategory.SEXUALLY_EXPLICIT,
+                    threshold=types.HarmBlockThreshold.ONLY_HIGH
                 ),
             ],
         )

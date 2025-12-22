@@ -1,9 +1,12 @@
-from services.plant_analysis_service import save_analysis_record
-from services.prompt_service import build_plant_prompt
-from services.gemini_client import GeminiClient
+from app.services.plant_analysis_service import save_analysis_record
+from app.services.prompt_service import build_plant_prompt
+from app.services.gemini_client import GeminiClient
+from app.database.mongodb import get_database
+
 from app.database.mongodb import get_database
  
-gemini = GeminiClient()
+def get_gemini_client() -> GeminiClient:
+    return GeminiClient()
 
 from bson import ObjectId
 from typing import Dict
@@ -14,6 +17,8 @@ async def create_analysis_with_ai(
     location: dict,
     image_id: str
 ) -> Dict:
+    
+    gemini = get_gemini_client()  # 👈 se crea cuando YA existe el env
 
     analysis_id_str: str = await save_analysis_record(
         user_id=user_id,

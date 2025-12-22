@@ -1,5 +1,7 @@
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException
 from bson import ObjectId
+from app.services.analysis_orchestrator import create_analysis_with_ai
+
 
 from app.services.plant_analysis_service import (
     save_analysis_record,
@@ -75,3 +77,37 @@ async def remove_analysis(analysis_id: str):
         raise HTTPException(status_code=404, detail="Análisis no encontrado")
 
     return {"message": "Análisis e imagen eliminados correctamente"}
+
+@router.post("/analysis/with-ai")
+async def upload_analysis_with_ai(
+    user_id: str = Form(...),
+    prediction: str = Form(...),
+    lat: float = Form(...),
+    lng: float = Form(...),
+    image: UploadFile = File(...)
+):
+
+    # 1. Guardar imagen en GridFS
+    fs = get_gridfs()
+    image_data = await image.read()
+    filename = image.filename or "uploaded_file"
+    image_id = await fs.upload_from_stream(filename, image_data)
+
+    # 2. Construir ubicación
+    location = {
+        "latitude": lat,
+        "longitude": lng
+    }
+
+    # 3. Llamar al orquestador
+    result = await create_analysis_with_ai(
+        user_id=user_id,
+        prediction=prediction,
+        location=location,
+        image_id=str(image_id)
+    )
+
+    return {
+        "message": "Análisis generado con IA",
+        **result
+    }
