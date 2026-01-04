@@ -1,23 +1,26 @@
 def build_plant_prompt(prediction: str, location: dict) -> str:
     """
-    Construye el prompt inscructivo apartir de la respuesta de los modelos deep leearning
-    e ubicación.
+    Construye un prompt instructivo a partir de la predicción
+    del modelo de deep learning y la información de ubicación.
 
-    Esta función entrega la información generada por el modelo de
-    gemini junto con los metadatos asociados(prediction, location).
+    Esta función genera un contexto enriquecido para el modelo
+    generativo (Gemini), combinando el resultado de clasificación
+    con metadatos ambientales.
 
     Args:
-        prediction (str): Identificador del estado de salud de la planta(Sephtoria_plant).
+        prediction (str): Estado de salud detectado en la planta
+            (ej. "Septoria_leaf_spot").
         location (dict): Información de geolocalización enviada
-            desde la aplicación móvil (latitud y longitud).
+            desde la aplicación móvil (lat, lng).
 
     Returns:
-        PlantAnalysis: Objeto del análisis de la plata.
+        str: Prompt instructivo para el modelo generativo.
     """
+
     disease = prediction
- 
-    lat = location.get("latitude")
-    lon = location.get("longitude")
+
+    lat = location.get("lat")
+    lon = location.get("lng")
 
     location_text = ""
     if lat is not None and lon is not None:

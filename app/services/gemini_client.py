@@ -64,20 +64,20 @@ class GeminiClient:
             response_schema=_response_schema_frontend,
             safety_settings=[
                 types.SafetySetting(
-                    category=types.HarmCategory.DANGEROUS_CONTENT,
-                    threshold=types.HarmBlockThreshold.MEDIUM_AND_ABOVE
+                    category=types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+                    threshold=types.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
                 ),
                 types.SafetySetting(
-                    category=types.HarmCategory.HATE_SPEECH,
-                    threshold=types.HarmBlockThreshold.ONLY_HIGH
+                    category=types.HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+                    threshold=types.HarmBlockThreshold.BLOCK_ONLY_HIGH
                 ),
                 types.SafetySetting(
-                    category=types.HarmCategory.HARASSMENT,
-                    threshold=types.HarmBlockThreshold.ONLY_HIGH
+                    category=types.HarmCategory.HARM_CATEGORY_HARASSMENT,
+                    threshold=types.HarmBlockThreshold.BLOCK_ONLY_HIGH
                 ),
                 types.SafetySetting(
-                    category=types.HarmCategory.SEXUALLY_EXPLICIT,
-                    threshold=types.HarmBlockThreshold.ONLY_HIGH
+                    category=types.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+                    threshold=types.HarmBlockThreshold.BLOCK_ONLY_HIGH
                 ),
             ],
         )
@@ -93,9 +93,6 @@ class GeminiClient:
 
 
     def generate(self, prompt: str) -> Dict:
-        """
-        Genera la respuesta completa para mostrar al usuario.
-        """
         try:
             res = self.client.models.generate_content(
                 model=self.model,
@@ -106,12 +103,15 @@ class GeminiClient:
             if not res.text:
                 raise ValueError("Respuesta vacía desde Gemini")
 
-            return json.loads(res.text)
+            return json.loads(res.text.strip("` \n"))
 
         except Exception as e:
             print(f"Error generando respuesta: {e}")
             return {
                 "mensaje": "No pude generar una respuesta en este momento. Por favor intenta nuevamente.",
+                "autocuidado": [],
+                "banderas_rojas": [],
+                "cuando_buscar_atencion": "",
                 "descargo": "Información educativa. No reemplaza asesoría agrícola profesional."
             }
 
@@ -147,6 +147,6 @@ class GeminiClient:
             print(f"Error generando resumen: {e}")
             return {
                 "tema": "Salud vegetal",
-                "resumen": full_response.get("mensaje", ""),
+                "resumen": full_response.get("mensaje", "")[:500],
                 "descargo": "Información educativa. No reemplaza asesoría agrícola profesional."
             }

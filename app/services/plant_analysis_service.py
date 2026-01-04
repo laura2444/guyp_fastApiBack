@@ -1,3 +1,4 @@
+from typing import Optional, Dict
 from app.models.plant import PlantAnalysis, PyObjectId
 from app.database.mongodb import get_database, get_gridfs
 from bson import ObjectId
@@ -16,7 +17,6 @@ async def save_analysis_record(user_id: str, prediction: str, location: dict, im
     result = await db["plant_analysis"].insert_one(
         record.model_dump(by_alias=True, exclude_none=True)
     )
-
     return str(result.inserted_id)
 
 async def get_analysis_by_id(analysis_id: str):
@@ -79,3 +79,26 @@ async def delete_analysis(analysis_id: str):
    
     result = await db["plant_analysis"].delete_one({"_id": ObjectId(analysis_id)})
     return result.deleted_count > 0
+
+
+
+async def get_ai_response_by_analysis_id(analysis_id: str) -> Optional[Dict]:
+    db = get_database()
+    return await db["plant_analysis"].find_one(
+        {"_id": ObjectId(analysis_id)},
+        {
+            "_id": 0,
+            "ai_response": 1,
+        }
+    )
+
+
+async def get_ai_summary_by_analysis_id(analysis_id: str) -> Optional[Dict]:
+    db = get_database()
+    return await db["plant_analysis"].find_one(
+        {"_id": ObjectId(analysis_id)},
+        {
+            "_id": 0,
+            "ai_summary": 1
+        }
+    )
