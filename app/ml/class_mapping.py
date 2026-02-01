@@ -2,17 +2,20 @@ CLASS_NAMES = {
     "tomato": [
         "Bacterial_spot",           # 0
         "Early_blight",             # 1  
-        "Late_blight",              # 2
-        "Leaf_Mold",                # 3
-        "Septoria_leaf_spot",       # 4
-        "Tomato_Yellow_Leaf_Curl_Virus",  # 5
+        "Healthy",                  # 2
+        "Late_blight",              # 3
+        "Leaf_Mold",                # 4
+        "Septoria_leaf_spot",       # 5
         "Tomato_mosaic_virus",      # 6
-        "Healthy"                   # 7
+        "Tomato_Yellow_Leaf_Curl_Virus"  # 7
+
+                         
     ],
     "potato": [
         "Early_blight",
-        "Late_blight",
-        "Healthy"
+        "Healthy",
+        "Late_blight"
+       
     ],
     "pepper": [
         "Bacterial_spot",
