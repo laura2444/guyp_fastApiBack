@@ -58,27 +58,18 @@ async def create_analysis_with_ai(
     analysis_id = ObjectId(analysis_id_str)
 
     # =============================
-    # 3️⃣ Obtener clima (si hay GPS)
+    # 3️⃣ Obtener clima (si hay GPS válido)
     # =============================
     weather = None
-
     try:
-        lat = float(location.get("lat", 0))
-        lon = float(location.get("lng", 0))  # ← AQUÍ ESTÁ EL FIX
-
-        print("GPS recibido:", lat, lon)
-
+        lat = float(location.get("lat") or location.get("latitude", 0))
+        lon = float(location.get("lng") or location.get("longitude", 0))
         weather = await get_weather(lat, lon)
-
-        print("Clima obtenido:", weather)
-
-    except Exception as e:
-        print("========== WEATHER ERROR ==========")
-        print(e)
-        print("===================================")
+    except (TypeError, ValueError):
+        weather = None
 
     # =============================
-    # 4️⃣ Construir prompt IA
+    # 4️⃣ Construir prompt IA (con clima y ubicación para mejor respuesta)
     # =============================
     prompt = build_plant_prompt(
         prediction={
@@ -86,7 +77,8 @@ async def create_analysis_with_ai(
             "disease": disease_name,
             "confidence": confidence
         },
-        location=location
+        location=location,
+        weather=weather
     )
 
     gemini = get_gemini_client()
