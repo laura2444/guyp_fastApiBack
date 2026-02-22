@@ -39,3 +39,7 @@ typing_extensions==4.14.1
 urllib3==2.5.0
 uvicorn==0.35.0
 websockets==15.0.1
+# Testing
+pytest==8.3.4
+pytest-asyncio==0.24.0
+asgi-lifespan==1.0.1
