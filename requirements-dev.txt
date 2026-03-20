@@ -1,0 +1,8 @@
+# Herramientas de desarrollo y tests (no instalar en la imagen de producción).
+-r requirements-prod.txt
+
+pytest==8.3.4
+pytest-asyncio==0.24.0
+pytest-cov==7.0.0
+coverage==7.13.4
+asgi-lifespan==1.0.1
