@@ -2,6 +2,9 @@
 # PyTorch CPU: usar el índice oficial para evitar paquetes nvidia-* y triton (~varios GB menos).
 # Instalación: pip install -r requirements-prod.txt
 #
+# Render: el repo incluye .python-version con 3.12 para evitar Python 3.14 por defecto (sin wheels
+# para pydantic-core y compilación desde fuente que suele fallar en el build).
+#
 # RAM: inferencia ResNet + PyTorch en CPU suele requerir ~400–800 MB; planes gratuitos con 512 MB
 # pueden fallar al arrancar; considera plan con más memoria o carga diferida del modelo.
 
