@@ -1,23 +1,4 @@
 # Entorno local completo: producción + tests.
 # Despliegue (Render/Railway/Docker): usar solo requirements-prod.txt
-#-r requirements-prod.txt
-#-r requirements-dev.txt
-
---extra-index-url https://download.pytorch.org/whl/cpu
-
-fastapi==0.116.1
-uvicorn[standard]==0.35.0
-motor==3.7.1
-pymongo==4.13.2
-pydantic==2.11.7
-email-validator==2.2.0
-python-dotenv==1.1.1
-python-jose[cryptography]==3.5.0
-passlib[bcrypt]==1.7.4
-bcrypt==4.3.0
-python-multipart==0.0.9
-httpx==0.28.1
-google-genai==1.52.0
-pillow==12.1.0
-torch==2.10.0
-torchvision==0.25.0
+-r requirements-prod.txt
+-r requirements-dev.txt
